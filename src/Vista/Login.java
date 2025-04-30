@@ -4,24 +4,36 @@ import javax.swing.*;
 import Modelo.Bibliotecario;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Login extends JFrame{
     private JPanel panelPrincipal;
     private JTextField campoUsuarioTexto;
     private JPasswordField passwordTexto;
-    private JButton ingresarButton, modeButton;
-    private JLabel UsuarioJLabel, PasswordJLabel, LoginJLabel ;
-
+    private JButton ingresarButton, modeButton, salirButton;
+    private JLabel UsuarioJLabel, PasswordJLabel, LoginJLabel;
     private boolean modoOscuro = true; // Estado inicial en oscuro
 
     public Login() {
-        inicializarForma();
-        ingresarButton.addActionListener(_ -> validar()); //Se asocia este boton con su respectiva validacion
-        modeButton.addActionListener(_ -> cambioColor()); //Se asocia este boton a cambiar el tema cuando se presione
+        //Inicializa y configura las propiedades de la ventana de login.
+        setTitle("Login"); //titulo
+        setContentPane(panelPrincipal); //lo que el JFrame debe de mostrar
+        setDefaultCloseOperation(EXIT_ON_CLOSE); //la aplicacion se cierre correctamente
+        setSize(410,490); //tamaño de la ventana
+        setLocationRelativeTo(null); // Se centra la ventana
+
+        ingresarButton.addActionListener(_ -> validar()); // Se asocia este botón con su respectiva validación
+        modeButton.addActionListener(_ -> cambioColor()); // Se asocia este botón a cambiar el tema cuando se presione
+        salirButton.addActionListener(_ -> System.exit(0)); //Boton con la logica de salir de la aplicacion
     }
 
+
+    /**
+     * Cambia entre el modo oscuro y claro utilizando la librería FlatLaf.
+     * Actualiza la interfaz de usuario y restaura las fuentes personalizadas.
+     */
     private void cambioColor() {
         try {
             if (modoOscuro) {
@@ -38,8 +50,13 @@ public class Login extends JFrame{
         }
     }
 
+    /**
+     * Establece fuentes personalizadas para los componentes de texto.
+     * Aplica una fuente monoespaciada a todos los elementos de la interfaz
+     * para mantener una apariencia consistente.
+     */
     private void restaurarFuente() {
-        //se define la fuente de cada componente
+        // Se define la fuente de cada componente
         Font fuente = new Font("Monospaced", Font.PLAIN, 20); // Fuente Monospaced, tamaño 20, estilo normal
         Font fuente2 = new Font("Monospaced", Font.BOLD, 30);
         LoginJLabel.setFont(fuente2);
@@ -49,8 +66,16 @@ public class Login extends JFrame{
         passwordTexto.setFont(fuente);
         ingresarButton.setFont(fuente);
         modeButton.setFont(fuente);
+        salirButton.setFont(fuente);
     }
 
+    /*
+      Valida los datos ingresados en el login.
+      Si son válidos, abre la ventana correspondiente según el tipo de usuario:
+      - Si es administrador, abre la ventana de administrador
+      - Si es bibliotecario, abre la ventana de biblioteca
+      Muestra mensajes de error si las credenciales son incorrectas.
+     */
     private void validar() {
         String usuario = campoUsuarioTexto.getText().trim();
         String password = new String(passwordTexto.getPassword()).trim();
@@ -62,7 +87,7 @@ public class Login extends JFrame{
             return;
         }
 
-        // Determinar el tipo de usuario basado en el nombre de usuario
+        // Determinar el tipo de usuario basado en el nombre de usuario es admin o bibliotecario
         if (usuario.equals("admin")) {// Validación para admin
             if (password.equals("1234")) {
                 Admin ventanaAdmin = new Admin();
@@ -72,17 +97,20 @@ public class Login extends JFrame{
                 mostrarMensaje("Contraseña incorrecta para el admin.");
             }
         } else {// Validación de bibliotecario en lista
-            Bibliotecario bib = new Bibliotecario("andres", "2006");
+            Bibliotecario bib = new Bibliotecario("usuario", "2006");
             Bibliotecario.listaBibliotecarios.add(bib);
 
+            // Recorre la lista de bibliotecarios para validar credenciales
             boolean encontradoBibliotecario = false;
             for (Bibliotecario b : Bibliotecario.listaBibliotecarios) {
                 if (b.validarBibliotecario(usuario, password)) {
                     System.out.println(Bibliotecario.listaBibliotecarios);
                     JOptionPane.showMessageDialog(this, "Bienvenido, Bibliotecario " + b.getUsuario());
+
                     Biblioteca ventanaBiblioteca = new Biblioteca();
                     ventanaBiblioteca.setVisible(true);
                     this.dispose();
+
                     encontradoBibliotecario = true;
                     break;
                 }
@@ -95,16 +123,9 @@ public class Login extends JFrame{
         }
     }
 
+    //Se encarga de mostrar un mensaje emergente con el texto proporcionado.
     private void mostrarMensaje(String mensaje){
         JOptionPane.showMessageDialog(this, mensaje);
-    }
-
-    public void inicializarForma (){
-        setTitle("Login");
-        setContentPane(panelPrincipal);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(410,490);
-        setLocationRelativeTo(null); //se centra la ventana
     }
 
     public static void main(String[] args) {

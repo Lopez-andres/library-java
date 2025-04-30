@@ -3,7 +3,7 @@ package Modelo;
 import java.time.LocalDate;
 
 public class Libro {
-    private String titulo;
+    private final String titulo;
     private String autor;
     private boolean prestado;
     private String personaPrestamo;
@@ -17,11 +17,12 @@ public class Libro {
         this.autor = autor;
     }
 
+    //getters y setters
+
     public String getTitulo() {
         return titulo;
     }
 
-    // obtener si esta prestado o no
     public boolean isPrestado() {
         return prestado;
     }
@@ -57,4 +58,5 @@ public class Libro {
     public void setFechaPrestamo(LocalDate fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
+
 }
