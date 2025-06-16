@@ -5,6 +5,8 @@
 This project is a Java application designed to manage book loans in a library through an interactive graphical interface.  
 The system supports loan and return tracking, user management, and penalty calculation for overdue books.
 
+![system view](src/prueba.png)
+
 ---
 
 ## 🚀 Features
